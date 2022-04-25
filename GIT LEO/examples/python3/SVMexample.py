@@ -2,8 +2,9 @@
 ## @author Leonardo Florez-Valencia (florez-l@javeriana.edu.co)
 ## =========================================================================
 
+import random
 import numpy, sys
-sys.path.append('/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT_LEO/PUJ_ML/lib/python3')
+sys.path.append('/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT/aprendizajeMaquina/GIT LEO/lib/python3')
 
 import PUJ
 
@@ -16,7 +17,7 @@ numP = 1000
 numN = 1000
 
 # Load data
-data = numpy.loadtxt( open( "/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT_LEO/PUJ_ML/examples/data/binary_data_01.csv", 'rb' ), delimiter = ',' )
+data = numpy.loadtxt( open( "/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT/aprendizajeMaquina/GIT LEO/examples/data/binary_data_01.csv", 'rb' ), delimiter=',' )
 P = data[ data[ : , 2 ] == 1 ]
 N = data[ data[ : , 2 ] == 0 ]
 numpy.random.shuffle( P )
@@ -29,24 +30,26 @@ Y = data[ : , -1 : ]
 
 # Configure model
 m = PUJ.Model.SVM( )
-m.setParameters( [ 0 for i in range( X.shape[ 1 ] + 1 ) ] )
+m.setParameters(
+  [ random.uniform( -1, 1 ) for i in range( X.shape[ 1 ] + 1 ) ]
+  )
 print( 'Initial model = ' + str( m ) )
 
 # Configure cost
 J = PUJ.Model.SVM.Cost( m, X, Y )
 
 # Debugger
-## debugger = PUJ.Optimizer.Debug.Simple
+debugger = PUJ.Optimizer.Debug.Simple
 ## debugger = PUJ.Optimizer.Debug.PlotPolynomialCost( X, Y )
-debugger = PUJ.Optimizer.Debug.Labeling( X, Y, 0.5 )
+# debugger = PUJ.Optimizer.Debug.Labeling( X, Y, 0.5 )
 
 # Fit using an optimization algorithm
 opt = PUJ.Optimizer.GradientDescent( J )
 opt.setDebugFunction( debugger )
-opt.setLearningRate( 1e-3 )
-opt.setNumberOfIterations( 100000 )
+opt.setLearningRate( 1e-10 ) 
+opt.setNumberOfIterations( 100000000 )
 opt.setNumberOfDebugIterations( 10000 )
-opt.setLambda( 0 )
+opt.setLambda( 5 )
 opt.Fit( )
 
 # Show results
@@ -64,6 +67,6 @@ for i in range( Y.shape[ 0 ] ):
 
 print( K )
 
-debugger.KeepFigures( )
+# debugger.KeepFigures( )
 
 ## eof - $RCSfile$

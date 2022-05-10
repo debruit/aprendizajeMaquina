@@ -37,7 +37,6 @@ numN = 1000
 def dispersor(y,largo, limite):
   tam=y.shape[0]
   alt=np.array([random.randint(largo, limite)*(-1)**i for i in range(tam)])
-  print(alt)
   return y+alt
 
 def crearDataLinealX(minX, maxX, minY, maxY, tam, pendiente,sezgo):
@@ -50,9 +49,9 @@ def crearDataLinealX(minX, maxX, minY, maxY, tam, pendiente,sezgo):
 def crearDataLinealY(tam):
    return np.array([ (-1)**i for i in range(tam)]).reshape(tam,1)
 
-tam = 100
+tam = 1000
 
-X = crearDataLinealX(-10,10,10,15,tam,1,0)
+X = crearDataLinealX(-20,20,40,65,tam,1,0)
 Y = crearDataLinealY(tam)
 
 # print(Y.shape)
@@ -65,12 +64,12 @@ m.setParameters(
 print( 'Initial model = ' + str( m ) )
 
 # Configure cost
-J = PUJ.Model.SVM.Cost( m, X, Y, 2 )
+J = PUJ.Model.SVM.Cost( m, X, Y, 32 )
 
 # Debugger
-# debugger = PUJ.Optimizer.Debug.Simple
+debugger = PUJ.Optimizer.Debug.Simple
 # debugger = PUJ.Optimizer.Debug.PlotPolynomialCost( X, Y )
-debugger = PUJ.Optimizer.Debug.Labeling( X, Y, 0.5 )
+# debugger = PUJ.Optimizer.Debug.Labeling( X, Y, 0.5 )
 
 # Fit using an optimization algorithm
 opt = PUJ.Optimizer.GradientDescent( J )
@@ -96,6 +95,6 @@ for i in range( Y.shape[ 0 ] ):
 
 print( K )
 
-debugger.KeepFigures( )
+# debugger.KeepFigures( )
 
 ## eof - $RCSfile$

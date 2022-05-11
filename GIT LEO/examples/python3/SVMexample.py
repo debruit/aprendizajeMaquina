@@ -18,20 +18,25 @@ import PUJ
 numP = 1000
 numN = 1000
 
+"""
+data = np.loadtxt( open( r"", 'rb' ), delimiter=',' )
+P = data[ data[ : , 2 ] == 1 ]
+N = data[ data[ : , 2 ] == 0 ]
+np.random.shuffle( P )
+np.random.shuffle( N )
+data = np.concatenate( ( P[ : numP , : ], N[ : numN , : ] ), axis = 0 )
+np.random.shuffle( data )
+
+
+X = data[ : ,  0 : -1 ]
+Y = data[ : , -1 : ]
+Y[Y==0] = -1
+
+print(Y.shape)
+
+"""
+
 # Load data
-# data = np.loadtxt( open( "/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT/aprendizajeMaquina/GIT LEO/examples/data/binary_data_01.csv", 'rb' ), delimiter=',' )
-# P = data[ data[ : , 2 ] == 1 ]
-# N = data[ data[ : , 2 ] == 0 ]
-# np.random.shuffle( P )
-# np.random.shuffle( N )
-# data = np.concatenate( ( P[ : numP , : ], N[ : numN , : ] ), axis = 0 )
-# np.random.shuffle( data )
-
-
-# X = data[ : ,  0 : -1 ]
-# Y = data[ : , -1 : ]
-
-# print(Y.shape)
 
 
 def dispersor(y,largo, limite):
@@ -54,6 +59,8 @@ tam = 1000
 X = crearDataLinealX(-20,20,40,65,tam,1,0)
 Y = crearDataLinealY(tam)
 
+
+
 # print(Y.shape)
 
 # Configure model
@@ -64,20 +71,20 @@ m.setParameters(
 print( 'Initial model = ' + str( m ) )
 
 # Configure cost
-J = PUJ.Model.SVM.Cost( m, X, Y, 32 )
+J = PUJ.Model.SVM.Cost( m, X, Y, 4)
 
 # Debugger
 debugger = PUJ.Optimizer.Debug.Simple
-# debugger = PUJ.Optimizer.Debug.PlotPolynomialCost( X, Y )
+#debugger = PUJ.Optimizer.Debug.PlotPolynomialCost( X, Y )
 # debugger = PUJ.Optimizer.Debug.Labeling( X, Y, 0.5 )
 
 # Fit using an optimization algorithm
 opt = PUJ.Optimizer.GradientDescent( J )
 opt.setDebugFunction( debugger )
-opt.setLearningRate( 1e-5 ) 
-opt.setNumberOfIterations( 100000 )
+opt.setLearningRate( 1e-5 )
+opt.setNumberOfIterations( 10000 )
 opt.setNumberOfDebugIterations( 100 )
-opt.setLambda( 4 )
+opt.setLambda( 5 )
 opt.Fit( )
 
 # Show results
@@ -88,11 +95,16 @@ print( '===========================================' )
 
 Y_est = m.threshold( X )
 K = np.zeros( ( 2, 2 ) )
-
 for i in range( Y.shape[ 0 ] ):
-  K[ int( Y[ i, 0 ] ), int( Y_est[ i, 0 ] ) ] += 1
+  if int( Y[ i, 0 ] ) == 1 and int( Y_est[ i, 0 ] ) == 1:
+    K[ 0, 0 ] += 1
+  if int( Y[ i, 0 ] ) == -1 and int( Y_est[ i, 0 ] ) == 1:
+    K[ 1, 0 ] += 1
+  if int( Y[ i, 0 ] ) == 1 and int( Y_est[ i, 0 ] ) == -1:
+    K[ 0, 1 ] += 1
+  if int( Y[ i, 0 ] ) == -1 and int( Y_est[ i, 0 ] ) == -1:
+    K[ 1, 1 ] += 1
 # end for
-
 print( K )
 
 # debugger.KeepFigures( )

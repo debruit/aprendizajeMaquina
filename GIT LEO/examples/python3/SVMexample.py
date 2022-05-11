@@ -6,7 +6,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-sys.path.append('/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT/aprendizajeMaquina/GIT LEO/lib/python3')
+sys.path.append('/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT/aprendizajeMaquina/GIT LEO/libPy/python3')
 
 import PUJ
 

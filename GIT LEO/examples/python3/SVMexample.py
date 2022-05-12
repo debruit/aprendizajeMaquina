@@ -6,7 +6,9 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-sys.path.append('/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT/aprendizajeMaquina/GIT LEO/libPy/python3')
+#sys.path.append('/Users/debruit/Library/CloudStorage/OneDrive-PontificiaUniversidadJaveriana/Noveno/ML/GIT/aprendizajeMaquina/GIT LEO/libPy/python3')
+sys.path.append(r'C:\Users\Estudiante\Documents\GitHub\aprendizajeMaquina\GIT LEO\libPy\python3')
+
 
 import PUJ
 
@@ -38,6 +40,15 @@ print(Y.shape)
 
 # Load data
 
+def graficarInfo(x,y,lbl):
+  plt.scatter(x, y,
+              c=lbl, edgecolor='none', alpha=0.5,
+              cmap=plt.cm.get_cmap('Paired'))
+  plt.xlabel('component 1')
+  plt.ylabel('component 2')
+  plt.colorbar()
+  plt.show()
+
 
 def dispersor(y,largo, limite):
   tam=y.shape[0]
@@ -66,12 +77,15 @@ Y = crearDataLinealY(tam)
 # Configure model
 m = PUJ.Model.SVM( )
 m.setParameters(
+  #[-0.000, 0.020, -5.215]
   [ random.uniform( -1, 1 ) for i in range( X.shape[ 1 ] + 1 ) ]
   )
 print( 'Initial model = ' + str( m ) )
 
+
+
 # Configure cost
-J = PUJ.Model.SVM.Cost( m, X, Y, 4)
+J = PUJ.Model.SVM.Cost( m, X, Y, 20)
 
 # Debugger
 debugger = PUJ.Optimizer.Debug.Simple
@@ -93,7 +107,7 @@ print( '= Iterations       :', opt.realIterations( ) )
 print( '= Fitted model     :', m )
 print( '===========================================' )
 
-Y_est = m.threshold( X )
+Y_est = np.array(m.threshold( X ))
 K = np.zeros( ( 2, 2 ) )
 for i in range( Y.shape[ 0 ] ):
   if int( Y[ i, 0 ] ) == 1 and int( Y_est[ i, 0 ] ) == 1:
@@ -106,6 +120,10 @@ for i in range( Y.shape[ 0 ] ):
     K[ 1, 1 ] += 1
 # end for
 print( K )
+
+graficarInfo(X[:, 0], X[:, 1], Y)
+graficarInfo(X[:, 0], X[:, 1], Y_est )
+
 
 # debugger.KeepFigures( )
 

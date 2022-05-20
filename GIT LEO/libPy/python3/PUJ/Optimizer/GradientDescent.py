@@ -19,10 +19,12 @@ class GradientDescent(Base):
         # Initial values
         [J0, g] = self.evaluate( 0 )
         start_batch = 1
+        J1=0
 
         # Prepare loop
         stop = False
         self.m_Iteration = 0
+
 
         # Main loop
         while not stop:

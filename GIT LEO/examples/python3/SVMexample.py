@@ -20,23 +20,6 @@ import PUJ
 numP = 1000
 numN = 1000
 
-"""
-data = np.loadtxt( open( r"", 'rb' ), delimiter=',' )
-P = data[ data[ : , 2 ] == 1 ]
-N = data[ data[ : , 2 ] == 0 ]
-np.random.shuffle( P )
-np.random.shuffle( N )
-data = np.concatenate( ( P[ : numP , : ], N[ : numN , : ] ), axis = 0 )
-np.random.shuffle( data )
-
-
-X = data[ : ,  0 : -1 ]
-Y = data[ : , -1 : ]
-Y[Y==0] = -1
-
-print(Y.shape)
-
-"""
 
 # Load data
 
@@ -67,7 +50,7 @@ def crearDataLinealY(tam):
 
 tam = 1000
 
-X = crearDataLinealX(-20,20,40,65,tam,1,0)
+X = crearDataLinealX(-20,20,15,25,tam,1,0)
 Y = crearDataLinealY(tam)
 
 
@@ -85,7 +68,7 @@ print( 'Initial model = ' + str( m ) )
 
 
 # Configure cost
-J = PUJ.Model.SVM.Cost( m, X, Y, 20)
+J = PUJ.Model.SVM.Cost( m, X, Y, 1)
 
 # Debugger
 debugger = PUJ.Optimizer.Debug.Simple
@@ -95,10 +78,11 @@ debugger = PUJ.Optimizer.Debug.Simple
 # Fit using an optimization algorithm
 opt = PUJ.Optimizer.GradientDescent( J )
 opt.setDebugFunction( debugger )
-opt.setLearningRate( 1e-5 )
+opt.setLearningRate( 1e-8 )
 opt.setNumberOfIterations( 10000 )
 opt.setNumberOfDebugIterations( 100 )
-opt.setLambda( 5 )
+opt.setLambda(2)
+#opt.setRegularizationToLASSO()
 opt.Fit( )
 
 # Show results
@@ -108,6 +92,10 @@ print( '= Fitted model     :', m )
 print( '===========================================' )
 
 Y_est = np.array(m.threshold( X ))
+
+#print(Y_est)
+#print(Y)
+
 K = np.zeros( ( 2, 2 ) )
 for i in range( Y.shape[ 0 ] ):
   if int( Y[ i, 0 ] ) == 1 and int( Y_est[ i, 0 ] ) == 1:
@@ -118,8 +106,14 @@ for i in range( Y.shape[ 0 ] ):
     K[ 0, 1 ] += 1
   if int( Y[ i, 0 ] ) == -1 and int( Y_est[ i, 0 ] ) == -1:
     K[ 1, 1 ] += 1
+  if int( Y[ i, 0 ] ) == -1 and int(Y_est[i, 0]) == 0:
+    K[1, 0] += 1
+  if int(Y[i, 0]) == 1 and int(Y_est[i, 0]) == 0:
+    K[0, 1] += 1
 # end for
 print( K )
+
+print("La exactitud es :", (K[0, 0]+ K[1, 1])/ (K[0, 0]+ K[1, 1]+ K[0, 1] +K[1, 0]) )
 
 graficarInfo(X[:, 0], X[:, 1], Y)
 graficarInfo(X[:, 0], X[:, 1], Y_est )

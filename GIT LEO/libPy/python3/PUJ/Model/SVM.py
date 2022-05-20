@@ -51,9 +51,9 @@ class SVM( Base ):
   
   def threshold( self, x ):
     z = self.evaluate( x )
-    # z[z <= -1] = -1
-    # z[z >= 1] = 1
-    # return z
+    #z[z <= -1] = -1
+    #z[z >= 1] = 1
+    #return z
     return ( z >= 1 ).astype( z.dtype ) - ( z <= -1 ).astype( z.dtype )
 
   ## -----------------------------------------------------------------------
@@ -80,52 +80,35 @@ class SVM( Base ):
       #print("**********")
       X = samples[ 0 ]
       Y = samples[ 1 ]
-      num_x = X.shape[ 0 ]
+      num_x = float(X.shape[ 0 ])
       num_param = self.m_Model.numberOfParameters( )
       
       x_evaluate= numpy.multiply(Y, self.m_Model.evaluate( X ))
-      #print(x_evaluate.shape)
-      #print(x_evaluate)
-      
-      
+
       x_ev1 = numpy.where(x_evaluate < 1)
       x_filtro = X[x_ev1[0]]
       y_filtro = Y[x_ev1[0]]
 
-      #print(x_filtro.shape)
-      #print(x_filtro)
-
-      #print(y_filtro.shape)
-      #print(y_filtro)
-
-      # x_filtro = numpy.reshape(x_filtro,[x_filtro.shape[0],2])
-      # y_filtro = numpy.reshape(y_filtro,[y_filtro.shape[0],1])
       
       cost_bisagra = 1-(numpy.multiply(y_filtro,self.m_Model.evaluate( x_filtro )))
-      
-      J = cost_bisagra.mean()  
+
+      if(cost_bisagra.shape[0] ==0):
+        J=0
+      else:
+        J = cost_bisagra.mean()
       
       if need_gradient:
         g = numpy.zeros( self.m_Model.parameters( ).shape )
         b = g[ 0 , 0 ]
-        resp = []
+
           
         g[ 0 , 0 ] = (y_filtro * b).sum()/ num_x
 
         a=numpy.multiply( X, Y )
-        #print(a.shape)
-        #print(a)
         b=a[ x_ev1[0]]
-        #print(b.shape)
-        #print(b)
         c=b.sum( axis = 0 )
-        #print(c)
         d=c.reshape( num_param - 1, 1 )
-        #print(d.shape)
-        #print(d)
-        e=d/ num_x
-        #print(e.shape)
-        #print(e)
+        e=-d/ num_x
 
         g[ 1 : , : ] =e
 

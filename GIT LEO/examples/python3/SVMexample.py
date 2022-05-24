@@ -118,6 +118,7 @@ print("La exactitud es :", (K[0, 0]+ K[1, 1])/ (K[0, 0]+ K[1, 1]+ K[0, 1] +K[1, 
 graficarInfo(X[:, 0], X[:, 1], Y)
 graficarInfo(X[:, 0], X[:, 1], Y_est )
 
+print("No se le olvide ordenar")
 
 # debugger.KeepFigures( )
 
